@@ -1,3 +1,4 @@
+
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -23,7 +24,13 @@ from app.model.models import User, Project, ContactMessage, BusinessMessage
 from app.core.config import settings
 
 target_metadata = Base.metadata
-config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+db_url = settings.DATABASE_URL
+if db_url.startswith("postgres://"):
+    db_url = "postgresql+psycopg://" + db_url[len("postgres://"):]
+elif db_url.startswith("postgresql://"):
+    db_url = "postgresql+psycopg://" + db_url[len("postgresql://"):]
+
+config.set_main_option("sqlalchemy.url", db_url)
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
