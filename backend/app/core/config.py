@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     
     # CORS
     CORS_ORIGINS: Union[List[str], str] = [
+        "https://badhusha-portfolio.vercel.app",
         "http://localhost:5173",
         "http://127.0.0.1:5173",
         "http://localhost:3000",
@@ -34,21 +35,36 @@ class Settings(BaseSettings):
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
+        def clean_origin(origin: str) -> str:
+            cleaned = str(origin).strip()
+            if cleaned != "*":
+                cleaned = cleaned.rstrip("/")
+            return cleaned
+
+        origins: List[str] = []
         if isinstance(v, str):
             val = v.strip()
-            if not val:
-                return []
-            if val.startswith("[") and val.endswith("]"):
-                try:
-                    parsed = json.loads(val)
-                    if isinstance(parsed, list):
-                        return [str(item).strip() for item in parsed if str(item).strip()]
-                except Exception:
-                    pass
-            return [origin.strip() for origin in val.split(",") if origin.strip()]
-        elif isinstance(v, list):
-            return [str(origin).strip() for origin in v if str(origin).strip()]
-        return []
+            if val:
+                if val.startswith("[") and val.endswith("]"):
+                    try:
+                        parsed = json.loads(val)
+                        if isinstance(parsed, list):
+                            origins = [clean_origin(item) for item in parsed if clean_origin(item)]
+                    except Exception:
+                        origins = []
+                if not origins:
+                    origins = [clean_origin(origin) for origin in val.split(",") if clean_origin(origin)]
+        elif isinstance(v, (list, tuple, set)):
+            origins = [clean_origin(origin) for origin in v if clean_origin(origin)]
+
+        production_origin = "https://badhusha-portfolio.vercel.app"
+        local_dev_origin = "http://localhost:5173"
+        if production_origin not in origins:
+            origins.append(production_origin)
+        if local_dev_origin not in origins:
+            origins.append(local_dev_origin)
+
+        return origins
     
     # Uploads
     UPLOAD_DIR: str = os.getenv("UPLOAD_DIR", os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "..", "uploads"))
