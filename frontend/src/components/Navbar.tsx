@@ -16,7 +16,7 @@ interface NavbarProps {
 
 // Dynamic CV download route - automatically serves the newest file uploaded by admin,
 // or falls back to default resume if no custom file has been uploaded.
-const CV_HREF = '/api/profile/cv/download'
+const CV_HREF = api.getCVDownloadUrl()
 
 const navItems = [
   { path: '/', label: 'Home' },

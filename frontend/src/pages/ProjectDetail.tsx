@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { api } from '../api/client'
+import { api, getAssetUrl } from '../api/client'
 import type { Project } from '../types'
 import { IconGitHub, IconExternalLink, IconArrowRight, IconAlertCircle } from '../components/Icons'
 
@@ -356,7 +356,7 @@ export const ProjectDetail: React.FC = () => {
         <figure className="pd-figure pd-in" style={d(0.85)}>
           <div className="pd-figure-inner">
             {project.thumbnail_url ? (
-              <img src={project.thumbnail_url} alt={project.title} />
+              <img src={getAssetUrl(project.thumbnail_url)} alt={project.title} />
             ) : (
               <div className="pd-noimg">{project.title.slice(0, 2)}</div>
             )}

@@ -2,6 +2,7 @@ import React from 'react'
 import { IconGitHub, IconExternalLink, IconArrowRight } from './Icons'
 import type { Project } from '../types'
 import { Link } from 'react-router-dom'
+import { getAssetUrl } from '../api/client'
 
 interface ProjectCardProps {
   project: Project
@@ -47,7 +48,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
       >
         {project.thumbnail_url ? (
           <img
-            src={project.thumbnail_url}
+            src={getAssetUrl(project.thumbnail_url)}
             alt={project.title}
             style={{
               width: '100%',

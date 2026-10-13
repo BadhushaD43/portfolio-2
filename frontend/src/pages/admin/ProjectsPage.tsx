@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../auth/AuthContext'
-import { api } from '../../api/client'
+import { api, getAssetUrl } from '../../api/client'
 import type { Project } from '../../types'
 import { AdminLayout } from '../../components/admin/AdminLayout'
 import { ProjectFormModal } from '../../components/ProjectFormModal'
@@ -265,7 +265,7 @@ export const AdminProjectsPage: React.FC = () => {
               >
                 {project.thumbnail_url ? (
                   <img
-                    src={project.thumbnail_url}
+                    src={getAssetUrl(project.thumbnail_url)}
                     alt=""
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />

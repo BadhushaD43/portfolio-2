@@ -13,7 +13,47 @@ import type {
   PasswordChangeData,
 } from '../types'
 
-const API_BASE = (import.meta.env.VITE_API_URL as string)?.replace(/\/+$/, '') || '/api'
+function getApiBase(): string {
+  const envUrl = (import.meta.env.VITE_API_URL as string)?.trim()
+  if (!envUrl) {
+    if (
+      typeof window !== 'undefined' &&
+      window.location.hostname !== 'localhost' &&
+      window.location.hostname !== '127.0.0.1'
+    ) {
+      console.warn(
+        '[Portfolio API] VITE_API_URL is not configured in environment variables! ' +
+        'Set VITE_API_URL=https://<your-render-backend>.onrender.com/api in Vercel Settings -> Environment Variables and redeploy.'
+      )
+    }
+    return '/api'
+  }
+  const cleanUrl = envUrl.replace(/\/+$/, '')
+  // If the user provided backend host URL without '/api', append it automatically
+  if (!cleanUrl.endsWith('/api')) {
+    return `${cleanUrl}/api`
+  }
+  return cleanUrl
+}
+
+export const API_BASE = getApiBase()
+
+/**
+ * Resolves static asset paths (like uploaded thumbnails /uploads/...) to absolute URLs
+ * pointing to the Render backend when deployed on Vercel.
+ */
+export function getAssetUrl(path?: string | null): string {
+  if (!path) return ''
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
+    return path
+  }
+  if (API_BASE.startsWith('http://') || API_BASE.startsWith('https://')) {
+    const origin = API_BASE.replace(/\/api\/?$/, '')
+    const cleanPath = path.startsWith('/') ? path : `/${path}`
+    return `${origin}${cleanPath}`
+  }
+  return path
+}
 
 function getAuthHeader(token?: string | null): Record<string, string> {
   const t = token || localStorage.getItem('badhusha_admin_token')

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
-import { api } from '../api/client'
+import { api, getAssetUrl } from '../api/client'
 import type { Project, ContactMessage } from '../types'
 import { ProjectFormModal } from '../components/ProjectFormModal'
 import {
@@ -276,7 +276,7 @@ export const AdminDashboard: React.FC = () => {
                       }}
                     >
                       {project.thumbnail_url ? (
-                        <img src={project.thumbnail_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <img src={getAssetUrl(project.thumbnail_url)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : '💻'}
                     </div>
 

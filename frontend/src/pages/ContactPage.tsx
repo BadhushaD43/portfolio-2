@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Contact as ContactComponent } from '../components/Contact'
 import { IconMail, IconPhone, IconMapPin } from '../components/Icons'
+import { api } from '../api/client'
 
 const FAQ_ITEMS = [
   {
@@ -295,7 +296,7 @@ export const ContactPage: React.FC = () => {
             <p className="ct-cta-text">
               I can onboard quickly with minimal ramp-up time. Feel free to{' '}
               <a
-                href="/api/profile/cv/download"
+                href={api.getCVDownloadUrl()}
                 download="Badhusha_D_CV.pdf"
                 style={{
                   color: 'var(--accent-primary)',

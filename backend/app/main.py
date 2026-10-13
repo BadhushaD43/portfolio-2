@@ -27,6 +27,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
+    allow_origin_regex=r"^https://.*\.vercel\.app$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -36,12 +37,18 @@ app.add_middleware(
 os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads")
 
-# Include Routers with API prefix
+# Include Routers with standard API prefix (/api)
 app.include_router(auth.router, prefix=settings.API_PREFIX)
 app.include_router(projects.router, prefix=settings.API_PREFIX)
 app.include_router(uploads.router, prefix=settings.API_PREFIX)
 app.include_router(contact.router, prefix=settings.API_PREFIX)
 app.include_router(profile.router, prefix=settings.API_PREFIX)
+
+# Fallback routes without /api prefix (ensures requests succeed even if /api is omitted)
+app.include_router(auth.router, include_in_schema=False)
+app.include_router(projects.router, include_in_schema=False)
+app.include_router(contact.router, include_in_schema=False)
+app.include_router(profile.router, include_in_schema=False)
 
 @app.get("/")
 def root():
@@ -56,3 +63,8 @@ def root():
 @app.get("/api/health")
 def health_check():
     return {"status": "healthy", "service": "portfolio-backend"}
+
+@app.get("/health")
+def health_check_root():
+    return {"status": "healthy", "service": "portfolio-backend"}
+
