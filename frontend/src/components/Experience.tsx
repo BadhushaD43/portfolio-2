@@ -155,7 +155,6 @@ export const Experience: React.FC = () => {
                           style={{
                             display: 'inline-flex',
                             alignItems: 'center',
-                            gap: '5px',
                             fontSize: '0.72rem',
                             fontWeight: 600,
                             color: 'var(--accent-primary)',
@@ -167,15 +166,6 @@ export const Experience: React.FC = () => {
                             letterSpacing: '0.05em',
                           }}
                         >
-                          <span
-                            style={{
-                              width: '6px',
-                              height: '6px',
-                              borderRadius: '50%',
-                              background: 'var(--accent-primary)',
-                              display: 'inline-block',
-                            }}
-                          />
                           Current
                         </span>
                       )}

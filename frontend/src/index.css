@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *, .dark, .dark *));
+
 :root {
   --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
@@ -79,12 +81,7 @@ body.light {
   --shadow-glow: 0 0 20px rgba(37, 99, 235, 0.12);
 }
 
-/* Base Resets */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* Base Resets - Handled by Tailwind Preflight in @layer base */
 
 html {
   font-family: var(--font-main);
@@ -133,8 +130,6 @@ a {
 button {
   font-family: inherit;
   cursor: pointer;
-  border: none;
-  background: none;
 }
 
 input, textarea, select {

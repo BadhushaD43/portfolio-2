@@ -1,24 +1,49 @@
 import React, { useEffect, useState } from 'react'
+import {
+  CircleHelp,
+  ChevronDown,
+  Briefcase,
+  Clock,
+  Database,
+  Sparkles,
+  MessageCircleQuestion,
+  ArrowRight,
+} from 'lucide-react'
 import { Contact as ContactComponent } from '../components/Contact'
 import { IconMail, IconPhone, IconMapPin } from '../components/Icons'
 import { api } from '../api/client'
 
-const FAQ_ITEMS = [
+interface FAQItem {
+  q: string
+  a: string
+  category: string
+  icon: React.ComponentType<{ className?: string }>
+}
+
+const FAQ_ITEMS: FAQItem[] = [
   {
     q: 'What roles are you currently looking for?',
-    a: 'I am actively seeking Junior Backend Developer, Java Developer, and Full Stack Developer positions (full-time, contract, or remote).',
+    a: 'I am actively seeking Junior Backend Developer, Java Developer, and Full Stack Developer positions (full-time, contract, or remote). Open to hybrid or on-site opportunities as well as distributed teams.',
+    category: 'Career & Opportunities',
+    icon: Briefcase,
   },
   {
     q: 'How quickly can you respond to inquiries?',
-    a: 'I typically reply to all email and form messages within 24 hours on business days.',
+    a: 'I typically reply to all email, WhatsApp, and contact form messages within 24 hours on business days. For urgent matters, direct phone or WhatsApp is the fastest channel.',
+    category: 'Communication',
+    icon: Clock,
   },
   {
     q: 'Can you work with both relational and NoSQL databases?',
-    a: 'Yes, my primary expertise is in PostgreSQL and MySQL, with strong schema design and indexing fundamentals.',
+    a: 'Yes! My primary expertise is in PostgreSQL and MySQL with schema modeling, query optimization, and indexing. I also work with MongoDB and Redis for caching and rapid prototyping.',
+    category: 'Technical Fit',
+    icon: Database,
   },
   {
     q: 'Are you available for freelance projects?',
-    a: 'Yes! I have successfully delivered full-stack CRM and management portals as a freelancer and welcome new inquiries.',
+    a: 'Yes! I have successfully delivered full-stack CRM and management portals as a freelancer. I can handle database design, REST APIs, responsive frontends, and cloud deployment.',
+    category: 'Freelance & Contract',
+    icon: Sparkles,
   },
 ]
 
@@ -85,47 +110,6 @@ const css = `
 }
 .ct-page a.ct-ch-link:hover { background-size: 100% 1.5px; }
 
-/* ---------- FAQ ---------- */
-.ct-wrap { max-width: 820px; margin: 0 auto; }
-.ct-head { text-align: center; margin: 0 auto 56px; max-width: 620px; }
-.ct-title { margin: 0 0 14px; padding: 0; font-size: clamp(1.9rem, 4vw, 2.7rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; color: var(--c-title); }
-.ct-title em {
-  font-style: normal;
-  background: linear-gradient(90deg, #3b82f6, #06b6d4);
-  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-}
-.ct-sub { margin: 0; padding: 0; font-size: 1.02rem; line-height: 1.7; color: var(--c-text); }
-
-.ct-faq { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--c-line); }
-.ct-faq-item { position: relative; margin: 0; padding: 0; border-bottom: 1px solid var(--c-line); }
-.ct-faq-item::after {
-  content: ''; position: absolute; left: 0; bottom: -1px; height: 1px; width: 100%;
-  background: var(--c-blue); transform: scaleX(0); transform-origin: left;
-  transition: transform .5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.ct-faq-item.open::after, .ct-faq-item:hover::after { transform: scaleX(1); }
-.ct-faq-btn {
-  display: grid; grid-template-columns: 48px minmax(0, 1fr) 36px; align-items: center; column-gap: 8px;
-  width: 100%; margin: 0; padding: 26px 0;
-  background: none; border: none; text-align: left; cursor: pointer;
-  color: var(--c-title); font: inherit;
-}
-.ct-faq-num { font-size: 0.85rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 0.06em; color: rgba(59, 130, 246, 0.8); }
-.ct-faq-q { font-size: 1.1rem; font-weight: 600; line-height: 1.4; letter-spacing: -0.01em; transition: color .25s ease; }
-.ct-faq-btn:hover .ct-faq-q, .ct-faq-item.open .ct-faq-q { color: #3b82f6; }
-.ct-faq-plus {
-  position: relative; justify-self: end;
-  width: 32px; height: 32px; border-radius: 50%;
-  display: inline-flex; align-items: center; justify-content: center;
-  background: var(--c-chip); color: var(--c-title);
-  transition: transform .4s ease, background-color .3s ease, color .3s ease;
-}
-.ct-faq-item.open .ct-faq-plus { transform: rotate(45deg); background: var(--c-blue); color: #fff; }
-.ct-faq-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .45s cubic-bezier(0.22, 1, 0.36, 1); }
-.ct-faq-item.open .ct-faq-panel { grid-template-rows: 1fr; }
-.ct-faq-panel > div { overflow: hidden; }
-.ct-faq-a { margin: 0; padding: 0 56px 28px 56px; font-size: 1rem; line-height: 1.8; color: var(--c-text); }
-
 /* ---------- availability ---------- */
 .ct-cta { position: relative; overflow: hidden; text-align: center; padding: 110px 0; }
 .ct-cta::before {
@@ -162,17 +146,11 @@ const css = `
   .ct-channels { grid-template-columns: 1fr; }
   .ct-channel { padding: 40px 24px; }
   .ct-channel + .ct-channel { border-left: none; border-top: 1px solid var(--c-line); }
-  .ct-faq-a { padding: 0 8px 26px 56px; }
-}
-@media (max-width: 520px) {
-  .ct-faq-btn { grid-template-columns: 34px minmax(0, 1fr) 32px; padding: 22px 0; }
-  .ct-faq-q { font-size: 1rem; }
-  .ct-faq-a { padding: 0 0 24px 34px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .ct-reveal { opacity: 1; transform: none; transition: none; }
   .ct-cta::before, .ct-dot::after { animation: none; }
-  .ct-channel::before, .ct-icon, .ct-faq-panel, .ct-faq-plus, .ct-faq-item::after { transition: none; }
+  .ct-channel::before, .ct-icon { transition: none; }
 }
 `
 
@@ -236,48 +214,132 @@ export const ContactPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Session 3: Frequently Asked Questions */}
-      <section className="ct-section">
-        <div className="container">
-          <div className="ct-wrap">
-            <div className="ct-head ct-reveal">
-              <h2 className="ct-title">
-                Frequently <em>Asked</em> Questions
+      {/* Session 3: Frequently Asked Questions (Tailwind CSS) */}
+      <section className="py-20 md:py-28 relative overflow-hidden bg-gradient-to-b from-white via-slate-50 to-white dark:from-[#090d16] dark:via-[#0c1322] dark:to-[#090d16] border-y border-slate-200/80 dark:border-white/10">
+        {/* Ambient background glow */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[320px] bg-blue-400/10 dark:bg-blue-600/15 rounded-full blur-[110px] pointer-events-none -z-0" />
+
+        <div className="container relative z-10">
+          <div className="max-w-3xl mx-auto">
+            {/* Header */}
+            <div className="flex flex-col items-center text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-blue-50 text-blue-700 border border-blue-200/90 dark:bg-blue-500/15 dark:text-blue-400 dark:border-blue-500/25 mb-4 shadow-sm">
+                <CircleHelp className="w-3.5 h-3.5" />
+                <span>FAQ Guide</span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15]">
+                Frequently <span className="bg-gradient-to-r from-blue-600 via-sky-500 to-cyan-500 bg-clip-text text-transparent">Asked</span> Questions
               </h2>
-              <p className="ct-sub">
-                Common questions regarding availability, technical fit, and response time.
+              <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+                Common questions regarding my availability, technical capabilities, response times, and project fit.
               </p>
             </div>
 
-            <ul className="ct-faq">
+            {/* FAQ Accordion List */}
+            <div className="space-y-4">
               {FAQ_ITEMS.map((item, idx) => {
                 const open = openIdx === idx
+                const IconComponent = item.icon
                 return (
-                  <li key={idx} className={`ct-faq-item ct-reveal ${open ? 'open' : ''}`} style={d(idx * 0.08)}>
+                  <div
+                    key={idx}
+                    className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
+                      open
+                        ? 'bg-white dark:bg-[#0f172a] border-blue-600 dark:border-blue-500/80 shadow-lg shadow-blue-500/10 ring-2 ring-blue-500/15'
+                        : 'bg-white dark:bg-[#0f172a]/70 border-slate-200 dark:border-slate-800 hover:border-blue-400 dark:hover:border-blue-500/50 hover:shadow-md shadow-sm'
+                    }`}
+                  >
                     <button
                       type="button"
-                      className="ct-faq-btn"
-                      aria-expanded={open}
+                      className="w-full text-left p-5 sm:p-6 flex items-center justify-between gap-4 cursor-pointer select-none transition-colors"
                       onClick={() => setOpenIdx(open ? null : idx)}
+                      aria-expanded={open}
                     >
-                      <span className="ct-faq-num">{String(idx + 1).padStart(2, '0')}</span>
-                      <span className="ct-faq-q">{item.q}</span>
-                      <span className="ct-faq-plus" aria-hidden="true">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
-                          <line x1="12" y1="5" x2="12" y2="19" />
-                          <line x1="5" y1="12" x2="19" y2="12" />
-                        </svg>
-                      </span>
+                      <div className="flex items-center gap-4 min-w-0">
+                        {/* Icon Box */}
+                        <div
+                          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+                            open
+                              ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25 scale-105'
+                              : 'bg-blue-50 text-blue-600 border border-blue-100 dark:bg-blue-950/60 dark:text-blue-400 dark:border-blue-900/50'
+                          }`}
+                        >
+                          <IconComponent className="w-5 h-5" />
+                        </div>
+
+                        {/* Question & Category */}
+                        <div className="min-w-0">
+                          <span className="block text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-0.5">
+                            {item.category}
+                          </span>
+                          <h3
+                            className={`text-base sm:text-lg font-semibold tracking-tight transition-colors duration-200 ${
+                              open
+                                ? 'text-blue-600 dark:text-blue-400'
+                                : 'text-slate-900 dark:text-slate-100'
+                            }`}
+                          >
+                            {item.q}
+                          </h3>
+                        </div>
+                      </div>
+
+                      {/* Chevron Toggle */}
+                      <div
+                        className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+                          open
+                            ? 'bg-blue-600 text-white rotate-180 shadow-sm'
+                            : 'bg-slate-100 text-slate-500 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-800 dark:text-slate-400'
+                        }`}
+                      >
+                        <ChevronDown className="w-4 h-4 transition-transform duration-300" />
+                      </div>
                     </button>
-                    <div className="ct-faq-panel">
-                      <div>
-                        <p className="ct-faq-a">{item.a}</p>
+
+                    {/* Expandable Answer Panel */}
+                    <div
+                      className={`grid transition-[grid-template-rows] duration-300 ease-out ${
+                        open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                      }`}
+                    >
+                      <div className="overflow-hidden">
+                        <div className="px-5 sm:px-6 pb-6 pt-3 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300 border-t border-slate-100 dark:border-slate-800/80">
+                          {item.a}
+                        </div>
                       </div>
                     </div>
-                  </li>
+                  </div>
                 )
               })}
-            </ul>
+            </div>
+
+            {/* Need more answers banner */}
+            <div className="mt-12 sm:mt-14 p-6 sm:p-8 rounded-2xl border border-blue-200/80 dark:border-slate-800 bg-gradient-to-r from-blue-50/80 via-white to-sky-50/80 dark:from-[#0d1527] dark:via-[#101b33] dark:to-[#0d1527] shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
+              <div className="flex items-center gap-4 text-center sm:text-left">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-blue-600 to-sky-500 text-white flex items-center justify-center flex-shrink-0 shadow-md shadow-blue-500/20">
+                  <MessageCircleQuestion className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                    Have a different question or specific requirement?
+                  </h4>
+                  <p className="text-sm text-slate-600 dark:text-slate-300 mt-0.5">
+                    I'm happy to provide custom solutions or clarify any technical details.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' })
+                }}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold !text-white !bg-blue-600 hover:!bg-blue-500 shadow-md shadow-blue-600/30 transition-all duration-200 whitespace-nowrap active:scale-95 cursor-pointer"
+                style={{ backgroundColor: '#2563eb', color: '#ffffff' }}
+              >
+                <span style={{ color: '#ffffff' }}>Ask Directly</span>
+                <ArrowRight className="w-4 h-4 text-white" />
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -287,7 +349,7 @@ export const ContactPage: React.FC = () => {
         <div className="container">
           <div className="ct-cta-inner ct-reveal">
             <div className="ct-avail">
-              <span className="" />
+              <span className="ct-dot" />
               Immediate Availability
             </div>
             <h2 className="ct-cta-title">
